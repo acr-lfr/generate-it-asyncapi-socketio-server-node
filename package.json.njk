@@ -8,19 +8,14 @@
     "dev:build-watch": "ttsc --watch -p .",
     "dev:setup": "git config core.hooksPath githooks && cp -n .env.example .env",
     "dev:start-watch": "nodemon ./build/server.js",
-    "generate:rabbitmq": "generate-it ../ms_rabbitmq_d/build/rabbitmq_asyncapi_1.0.1.yml -y -t https://github.com/acrontum/generate-it-asyncapi-rabbitmq-fanout.git -o src/events",
     "lint": "eslint 'src/**/*.{js,ts,tsx}'",
     "lint:fix": "eslint 'src/**/*.{js,ts,tsx}' --quiet --fix",
     "start": "node ./build/server.js",
     "pm2:start:dev": "pm2 start pm2.dev.config.js",
     "pm2:start:prod": "pm2 start pm2.prod.config.js",
-    "test": "npm run build && npm run lint && npm run test:unit",
+    "test": "npm run build && npm run lint && echo 'to run tests add this to the npm test script: npm run test:unit'",
     "test:unit": "ENVIRONMENT=test && jest --silent --runInBand",
     "test:unit:single": "ENVIRONMENT=test && jest --collect-coverage false --verbose --forceExit --detectOpenHandles"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@gitlab.com:orap/backend/msockets_socket_director.git"
   },
   "private": true,
   "author": "John Carmichael",
