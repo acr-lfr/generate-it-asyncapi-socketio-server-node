@@ -11,18 +11,17 @@ export default (payload: any[], clientSocket: SocketJWT): void => {
   const routingKey = payload[0];
   const data = payload[1];
   switch (routingKey) {
-      {% for path, channel in swagger.channels -%}
-      {% if channel.publish and _.includes(nodegenRc.helpers.subscribeOpIds, channel.publish.operationId) -%}
-      {% set channelId = _.toUpper(channel.publish.operationId) -%}
-    case operationIds.{{ channelId }}: {
+  {% for path, channel in swagger.channels -%}
+  {% if channel.publish and _.includes(nodegenRc.helpers.subscribeOpIds, channel.publish.operationId) -%}
+  {% set channelId = _.toUpper(channel.publish.operationId) -%}
+    case operationIds.{{ channelId }}:
       {{ channel.publish.operationId }}ReactHandle(
         routingKey,
         data,
         clientSocket
       );
       break;
-    }
-      {% endif -%}
-      {% endfor -%}
+  {% endif -%}
+  {% endfor -%}
   }
 }
