@@ -1,10 +1,6 @@
-import { Socket } from 'socket.io';
+import { SocketJWT } from '@/interfaces/SocketJWT';
 {% set channel = operations[0].channel.publish -%}
 import { {{ channel['x-response-definitions'] }} } from '@/generated/interfaces';
-
-interface SocketJWT extends Socket {
-  decoded_token: any
-}
 
 export default (
   routingKey: string,
