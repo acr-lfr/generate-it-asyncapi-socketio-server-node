@@ -6,9 +6,10 @@ import {{ channel.publish.operationId }}ReactHandle from '../reactHandles/{{ ucF
 {% endif -%}
 {% endfor %}
 
-export default (payload: any[], clientSocket: SocketJWT) => {
-  const routingKey = payload.data[0];
-  const data = payload.data[1];
+// eslint-disable-next-line max-lines-per-function
+export default (payload: any[], clientSocket: SocketJWT): void => {
+  const routingKey = payload[0];
+  const data = payload[1];
   switch (routingKey) {
       {% for path, channel in swagger.channels -%}
       {% if channel.publish and _.includes(nodegenRc.helpers.subscribeOpIds, channel.publish.operationId) -%}
