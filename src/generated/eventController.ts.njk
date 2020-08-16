@@ -1,0 +1,27 @@
+import * as operationIds from './operationIds';
+import { SocketJWT } from '@/interfaces/SocketJWT';
+{% for path, channel in swagger.channels -%}
+{% if channel.publish and _.includes(nodegenRc.helpers.subscribeOpIds, channel.publish.operationId) -%}
+import {{ channel.publish.operationId }}ReactHandle from '../reactHandles/{{ ucFirst(channel.publish.operationId) }}ReactHandle';
+{% endif -%}
+{% endfor %}
+
+export default (payload: any[], clientSocket: SocketJWT) => {
+  const routingKey = payload.data[0];
+  const data = payload.data[1];
+  switch (routingKey) {
+      {% for path, channel in swagger.channels -%}
+      {% if channel.publish and _.includes(nodegenRc.helpers.subscribeOpIds, channel.publish.operationId) -%}
+      {% set channelId = _.toUpper(channel.publish.operationId) -%}
+    case operationIds.{{ channelId }}: {
+      {{ channel.publish.operationId }}ReactHandle(
+        routingKey,
+        data,
+        clientSocket
+      );
+      break;
+    }
+      {% endif -%}
+      {% endfor -%}
+  }
+}

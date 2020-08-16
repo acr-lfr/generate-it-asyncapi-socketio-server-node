@@ -1,0 +1,4 @@
+# This include will pull content from the package.json file
+include:
+  - project: 'orap/ci/gitlabci'
+    file: 'ms.api.gitlab-ci.yml'

@@ -1,0 +1,55 @@
+{
+  "name": "ms-socket-node",
+  "version": "1.0.0",
+  "description": "This service only distribute data to the socket nodes, not the end clients",
+  "main": "index.js",
+  "scripts": {
+    "build": "ttsc -p .",
+    "dev:build-watch": "ttsc --watch -p .",
+    "dev:setup": "git config core.hooksPath githooks && cp -n .env.example .env",
+    "dev:start-watch": "nodemon ./build/server.js",
+    "generate:rabbitmq": "generate-it ../ms_rabbitmq_d/build/rabbitmq_asyncapi_1.0.1.yml -y -t https://github.com/acrontum/generate-it-asyncapi-rabbitmq-fanout.git -o src/events",
+    "lint": "eslint 'src/**/*.{js,ts,tsx}'",
+    "lint:fix": "eslint 'src/**/*.{js,ts,tsx}' --quiet --fix",
+    "start": "node ./build/server.js",
+    "pm2:start:dev": "pm2 start pm2.dev.config.js",
+    "pm2:start:prod": "pm2 start pm2.prod.config.js",
+    "test": "npm run build && npm run lint && npm run test:unit",
+    "test:unit": "ENVIRONMENT=test && jest --silent --runInBand",
+    "test:unit:single": "ENVIRONMENT=test && jest --collect-coverage false --verbose --forceExit --detectOpenHandles"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.com:orap/backend/msockets_socket_director.git"
+  },
+  "private": true,
+  "author": "John Carmichael",
+  "dependencies": {
+    "command-line-args": "^5.1.1",
+    "dotenv": "^8.2.0",
+    "generate-it-logger": "^1.2.4",
+    "openapi-nodegen-config-helper": "^1.3.1",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0",
+    "socketio-jwt": "^4.6.2",
+    "socketio-wildcard": "^2.0.0",
+    "uuid": "^8.3.0"
+  },
+  "devDependencies": {
+    "@types/command-line-args": "^5.0.0",
+    "@types/node": "^14.0.27",
+    "@types/socket.io": "^2.1.11",
+    "@types/socket.io-client": "^1.4.33",
+    "@types/uuid": "^8.3.0",
+    "@typescript-eslint/eslint-plugin": "^3.8.0",
+    "@typescript-eslint/parser": "^3.8.0",
+    "@zerollup/ts-transform-paths": "^1.7.18",
+    "eslint": "^7.6.0",
+    "eslint-plugin-deprecate": "^0.7.0",
+    "generate-it": "^5.19.1",
+    "ts-jest": "^26.1.4",
+    "ts-node": "^8.10.2",
+    "ttypescript": "^1.5.10",
+    "typescript": "^3.9.7"
+  }
+}

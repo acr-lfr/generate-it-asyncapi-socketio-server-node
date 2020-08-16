@@ -1,0 +1,12 @@
+# Keep files
+!.gitkeep
+
+# Ignore files
+.env
+build/
+node_modules
+.openapi-nodegen/git/
+.DS_Store
+.idea/workspace.xml
+npm-debug.log
+coverage

@@ -1,0 +1,32 @@
+version: "3"
+
+# virtual volume
+volumes:
+  build:
+
+services:
+  ms-item-d-watcher:
+    image: "${IMAGE_PREFIX}watcher-image:${IMAGE_TAG:-latest}"
+    env_file:
+      - .env
+    depends_on:
+      - ms-item-d-service
+    volumes:
+      - .:/code
+      - build:/code/build
+    command: watch
+
+  ms-item-d-service:
+    image: "${IMAGE_PREFIX}ms-item-d-image:${IMAGE_TAG:-latest}"
+    env_file:
+      - .env
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - "8080:8000"
+    volumes:
+      - build:/code/build
+    networks: ms-item-d
+      - default
+    command: dev

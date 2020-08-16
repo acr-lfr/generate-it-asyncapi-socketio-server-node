@@ -1,2 +1,3 @@
-# generate-it-asyncapi-socketio-server-node
-A node connects to a director, a director sends data for the node to send to connected end clients 
+# ms_socket_node
+
+Accepts data from the socket director and passes to a connected end client via socketio
