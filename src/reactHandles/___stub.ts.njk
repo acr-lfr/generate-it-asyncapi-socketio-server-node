@@ -1,6 +1,7 @@
 import { SocketJWT } from '@/interfaces/SocketJWT';
 {% set channel = operations[0].channel.publish -%}
 import { {{ channel['x-response-definitions'] }} } from '@/generated/interfaces';
+import socketSendMessage from '@/utils/socketSendMessage'
 
 export default (
   routingKey: string,
@@ -8,6 +9,10 @@ export default (
   socket: SocketJWT
 ): void => {
   if (payload.toActor.username === socket.decoded_token.username) {
-    socket.emit(routingKey, payload);
+    socketSendMessage(
+      socket,
+      routingKey,
+      payload
+    );
   }
 }

@@ -1,13 +1,10 @@
 import { Server, Socket } from 'socket.io';
 
-export default (socket: Socket | Server) => {
-  return (routingKey: string, payload: any) => {
-    const message = {
-      id: uuidv4(),
-      time: new Date(),
-      routingKey,
-      payload
-    };
-    socket.emit('message', message);
+export default (socket: Socket | Server, routingKey: string, payload: any): void => {
+  const message = {
+    time: new Date(),
+    routingKey,
+    payload
   };
+  socket.emit('message', message);
 };
