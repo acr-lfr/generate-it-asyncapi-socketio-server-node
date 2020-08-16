@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 {% set channel = operations[0].channel.publish -%}
-import { {{ channel['x-response-definitions'] }} } from '../rabbitMQ/interfaces';
+import { {{ channel['x-response-definitions'] }} } from '@/generated/interfaces';
 
 interface SocketJWT extends Socket {
   decoded_token: any
@@ -11,5 +11,7 @@ export default (
   payload: {{ channel['x-response-definitions'] }},
   socket: SocketJWT
 ): void => {
-  //
+  if (payload.toActor.username === socket.decoded_token.username) {
+    socket.emit(routingKey, payload);
+  }
 }
