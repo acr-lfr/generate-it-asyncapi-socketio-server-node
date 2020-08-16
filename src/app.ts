@@ -1,4 +1,4 @@
-import ioserver, { Socket } from 'socket.io';
+import ioserver from 'socket.io';
 import * as socketioJwt from 'socketio-jwt';
 import config from '@/config';
 import eventController from '@/generated/eventController';
