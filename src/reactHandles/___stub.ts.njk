@@ -1,18 +1,18 @@
 import { SocketJWT } from '@/interfaces/SocketJWT';
 {% set channel = operations[0].channel.publish -%}
 import { {{ channel['x-response-definitions'] }} } from '@/generated/interfaces';
-import socketSendMessage from '@/utils/socketSendMessage'
 
 export default (
   routingKey: string,
   payload: {{ channel['x-response-definitions'] }},
   socket: SocketJWT
 ): void => {
-  if (payload.toActor.username === socket.decoded_token.username) {
-    socketSendMessage(
-      socket,
+  if (payload.toActor.username === socket.decoded_token.data.username) {
+    const message = {
+      time: new Date(),
       routingKey,
-      payload
-    );
+      payload: payload.notification
+    };
+    socket.emit('direct', message);
   }
 }
