@@ -8,8 +8,6 @@ import packageJson from './package.json';
 
 app().then((io: Server) => {
   const port = appCli().port || config.port;
-
-  // Server listening on PORT
   io.listen(port);
   console.log(`${packageJson.name} listening on port ${port}`);
 }).catch((e) => {

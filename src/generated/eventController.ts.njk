@@ -1,5 +1,5 @@
+import { Socket } from 'socket.io';
 import * as operationIds from './operationIds';
-import { SocketJWT } from '@/interfaces/SocketJWT';
 {% for path, channel in swagger.channels -%}
 {% if channel.publish and _.includes(nodegenRc.helpers.subscribeOpIds, channel.publish.operationId) -%}
 import {{ channel.publish.operationId }}ReactHandle from '../reactHandles/{{ ucFirst(channel.publish.operationId) }}ReactHandle';
@@ -7,7 +7,7 @@ import {{ channel.publish.operationId }}ReactHandle from '../reactHandles/{{ ucF
 {% endfor %}
 
 // eslint-disable-next-line max-lines-per-function
-export default (payload: any[], clientSocket: SocketJWT): void => {
+export default (payload: any[], clientSocket: Socket, username: string): void => {
   const routingKey = payload[0];
   const data = payload[1];
   switch (routingKey) {
@@ -18,7 +18,8 @@ export default (payload: any[], clientSocket: SocketJWT): void => {
       {{ channel.publish.operationId }}ReactHandle(
         routingKey,
         data,
-        clientSocket
+        clientSocket,
+        username
       );
       break;
   {% endif -%}

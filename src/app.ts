@@ -1,31 +1,34 @@
-import ioserver from 'socket.io';
-import * as socketioJwt from 'socketio-jwt';
-import config from '@/config';
-import eventController from '@/generated/eventController';
-import { SocketJWT } from '@/interfaces/SocketJWT';
-import socketDirector from '@/utils/socketDirector';
+import { Server, Socket } from 'socket.io';
 
-export default async (): Promise<ioserver.Server> => {
+import eventController from '@/generated/eventController';
+import socketDirector from '@/utils/socketDirector';
+import config from '@/config';
+import jwt from 'jsonwebtoken';
+
+export default async (): Promise<Server> => {
   // Establish the socket to the director
   const directorSocket = socketDirector();
 
-  // Create the SocketIO server (ie what this node is)
-  const io = ioserver();
+  // Create the SocketIO server (this is what the browsers will connect to)
+  const io = new Server();
 
-  // On connection, wait for the JWT check before continuing
-  io.sockets.on('connection', socketioJwt.authorize({
-    secret: config.jwtSecret,
-    timeout: 15000 // 15 seconds to send the authentication message else fail
-  }));
-
-  // This socket is authenticated, we are good to handle more events from it.
-  io.sockets.on('authenticated', (clientSocket: SocketJWT) => {
-    console.log(`Client authenticated and connected: ${clientSocket.id}`);
-
-    // respond to the wildcard trigger from the director
-    directorSocket.on('*', (directorSocketValue: any) => {
-      eventController(directorSocketValue.data, clientSocket);
+  // Authenticate the connections
+  io.sockets.on('connection', (socket: Socket) => {
+    socket.on('authenticate', (payload: { token: string }) => {
+      jwt.verify(payload.token, config.jwtSecret, (err: any, data: any) => {
+        if (err) {
+          return socket.disconnect(true);
+        }
+        const username = data.data.username;
+        socket.emit('authenticated');
+        // we are now connected to the client, register the events with the events controller
+        console.log(`Client authenticated and connected to username: ${username}`);
+        directorSocket.on('*', (directorSocketValue: any) => {
+          eventController(directorSocketValue.data, socket, username);
+        });
+      });
     });
   });
+
   return io;
 }
