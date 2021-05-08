@@ -21,10 +21,19 @@ export default async (): Promise<Server> => {
         }
         const username = data.data.username;
         socket.emit('authenticated');
+
+        // Connect the user to their own room, there will be n devices connected by the same username
+        socket.join(username);
+
+        // optionally add here socket message handlers, typically requests to join new rooms
+        //...
+
         // we are now connected to the client, register the events with the events controller
         console.log(`Client authenticated and connected to username: ${username}`);
+
+        // Lastly wildcard routing handler
         directorSocket.on('*', (directorSocketValue: any) => {
-          eventController(directorSocketValue.data, socket, username);
+          eventController(directorSocketValue.data, io, username);
         });
       });
     });

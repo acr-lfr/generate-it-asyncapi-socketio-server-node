@@ -1,18 +1,18 @@
-import { Socket } from 'socket.io';
+import { Server } from 'socket.io';
 {% set channel = operations[0].channel.publish -%}
 import { {{ channel['x-response-definitions'] }} } from '@/generated/interfaces';
 
 export default (
   routingKey: string,
   payload: {{ channel['x-response-definitions'] }},
-  socket: Socket,
-  username: string
+  io: Server,
+  room: string
 ): void => {
-  if (payload.notification.recipient.username === username) {
-    socket.emit('direct', {
+  io
+    .to(room)
+    .emit('direct', {
       time: new Date(),
       routingKey,
       payload: payload.notification
     });
-  }
 }
