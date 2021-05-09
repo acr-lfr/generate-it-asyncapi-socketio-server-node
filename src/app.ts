@@ -1,9 +1,9 @@
 import { Server, Socket } from 'socket.io';
+import jwt from 'jsonwebtoken';
 
 import eventController from '@/generated/eventController';
 import socketDirector from '@/utils/socketDirector';
 import config from '@/config';
-import jwt from 'jsonwebtoken';
 
 export default async (): Promise<Server> => {
   // Establish the socket to the director
@@ -25,19 +25,18 @@ export default async (): Promise<Server> => {
         // Connect the user to their own room, there will be n devices connected by the same username
         socket.join(username);
 
-        // optionally add here socket message handlers, typically requests to join new rooms
-        //...
+        // Optionally respond to the user request to join specific rooms, eg:
+        // socket.on('join-room', (payload: SocketJoinRoomPayload) => socketJoinRoom(io, socket, username, payload));
 
-        // we are now connected to the client, register the events with the events controller
+        // we are now connected to the client
         console.log(`Client authenticated and connected to username: ${username}`);
-
-        // Lastly wildcard routing handler
-        directorSocket.on('*', (directorSocketValue: any) => {
-          eventController(directorSocketValue.data, io, username);
-        });
       });
     });
   });
 
+  // Wildcard match here as the eventController is a generated switch statement
+  directorSocket.on('*', async (directorSocketValue: any) => eventController(directorSocketValue.data, io));
+
+  // finally.. return the socket server
   return io;
 }

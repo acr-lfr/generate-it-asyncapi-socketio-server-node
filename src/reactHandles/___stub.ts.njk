@@ -6,13 +6,13 @@ export default (
   routingKey: string,
   payload: {{ channel['x-response-definitions'] }},
   io: Server,
-  room: string
 ): void => {
+  const room = '' // you will need to have your own mechanism to calculate the room here based on the notification type.
   io
     .to(room)
     .emit('direct', {
       time: new Date(),
       routingKey,
-      payload: payload.notification
+      payload
     });
 }

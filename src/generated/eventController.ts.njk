@@ -7,7 +7,7 @@ import {{ channel.publish.operationId }}ReactHandle from '../reactHandles/{{ ucF
 {% endfor %}
 
 // eslint-disable-next-line max-lines-per-function
-export default (payload: any[], io: Server, room: string): void => {
+export default (payload: any[], io: Server): void => {
   const routingKey = payload[0];
   const data = payload[1];
   switch (routingKey) {
@@ -18,8 +18,7 @@ export default (payload: any[], io: Server, room: string): void => {
       {{ channel.publish.operationId }}ReactHandle(
         routingKey,
         data,
-        io,
-        room
+        io
       );
       break;
   {% endif -%}
